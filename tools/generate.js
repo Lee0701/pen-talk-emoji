@@ -35,7 +35,7 @@ async function generate(name, background, text) {
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.strokeStyle = 'black'
-        ctx.lineWidth = 16
+        ctx.lineWidth = 12
         ctx.strokeText(text, canvasSize / 2, canvasSize / 2)
         ctx.fillStyle = 'white'
         ctx.fillText(text, canvasSize / 2, canvasSize / 2)
@@ -47,7 +47,16 @@ async function loadBackground(path) {
     if(path.startsWith('@')) {
         const [type, content] = path.split('/')
         const types = {
-            '@emoji': (content) => loadSvg(`${emojiPath}${content.toLowerCase()}.svg`),
+            '@emoji': async (content) => {
+                const decoded = content.codePointAt(0).toString(16).padStart(2, '0').toLowerCase()
+                const decodedPath = `${emojiPath}${decoded}.svg`
+                try {
+                    const stat = await fs.stat(decodedPath)
+                    if(stat.isFile) return await loadSvg(decodedPath)
+                } catch {
+                }
+                return await loadSvg(`${emojiPath}${content}.svg`)
+            },
         }
         return await types[type](content)
     } else if(path.endsWith('.svg')) {
