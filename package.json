@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "GPL-2.0"
+  "license": "GPL-2.0",
+  "dependencies": {
+    "canvas": "^2.11.2",
+    "convert-svg-to-png": "^0.6.4"
+  }
 }
